@@ -1,0 +1,3 @@
+﻿  dna.c
+C:\Users\willk\Nextcloud\Mecha3.5\CPSC259\Labs\Lab 2\CPSC259_Lab2_Takehome\CPSC259_Lab2_Takehome\CPSC259_Lab2_Takehome\dna.c(282,41): warning C4047: '=': 'char' differs in levels of indirection from 'char *'
+  CPSC259_Lab2_Takehome.vcxproj -> C:\Users\willk\Nextcloud\Mecha3.5\CPSC259\Labs\Lab 2\CPSC259_Lab2_Takehome\CPSC259_Lab2_Takehome\Debug\CPSC259_Lab2_Takehome.exe
