@@ -250,7 +250,7 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
   int i = 0;
   int has_perfect_match = 0;
   int score = 0;
-  char outputline_buffer[OUTPUTBUFFERSIZE] = "\0";
+  char outputline_buffer[BUFSIZE] = "\0";
   char int_buffer[BUFSIZE];
 
   /* Hint: Check to see if any candidate segment(s) are a perfect match, and report them

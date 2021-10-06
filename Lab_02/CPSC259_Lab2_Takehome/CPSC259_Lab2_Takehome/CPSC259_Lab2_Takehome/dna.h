@@ -20,8 +20,8 @@
 
 #pragma once
 
-#define BUFSIZE            512
-#define OUTPUTBUFFERSIZE    4096 //Needed a longer buffer for the output buffer
+#define BUFSIZE            4096
+//#define OUTPUTBUFFERSIZE    4096 //Needed a longer buffer for the output buffer
 #define ASCII_OFFSET        48
 #define CODON_SYMBOL_LENGTH  4
 #define CODON_LENGTH         3
