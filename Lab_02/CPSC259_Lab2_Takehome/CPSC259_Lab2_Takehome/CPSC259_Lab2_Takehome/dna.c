@@ -269,7 +269,7 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
   for (int i = 0; i < number_of_candidates; i++) {
       candidate_length = strlen(candidate_segments[i]);
       if (sample_length == candidate_length) {
-          if (strstr(sample_segment, candidate_segments[i]) != NULL) {
+          if (strcmp(sample_segment, candidate_segments[i]) == 0) {
               sprintf(int_buffer, "%d", i + 1);
               strcat(outputline_buffer, "Candidate number ");
               strcat(outputline_buffer, int_buffer);
@@ -342,36 +342,34 @@ int calculate_score(char* sample_segment, char* candidate_segment)
   /* Some helpful variables you might (or might not) want to use */
   int temp_score = 0;
   int score = 0;
-  int iterations = 0;
   int sample_length = strlen(sample_segment);
   int candidate_length = strlen(candidate_segment);
   int sample_length_in_codons = sample_length / 3;
   int candidate_length_in_codons = candidate_length / 3;
   int windowStart;
-  char sampleCodon[3];
-  char candidateCodon[3];
+  char sampleCodon[4] = "\0";
+  char candidateCodon[4] = "\0";
 
   // Insert your code here (replace this return statement with your own code)
-  for (iterations = 0; iterations < (candidate_length_in_codons - sample_length_in_codons + 1); iterations++) {
+  for (int iterations = 0; iterations < (candidate_length_in_codons - sample_length_in_codons + 1); iterations++) {
       temp_score = 0;
       windowStart = 3 * iterations;
       
-      for (int windowShift = 0; windowShift < sample_length; windowShift+=3) {
+      for (int windowShift = 0; windowShift < sample_length - 1; windowShift+=3) {
           //Copies Codons
-          strncpy(sampleCodon, sample_segment + windowShift, 3);
-          strncpy(candidateCodon, candidate_segment + windowStart + windowShift, 3);
-          char* sampleName = codon_names[get_codon_index(sampleCodon)];
-          char* candidateName = codon_names[get_codon_index(candidateCodon)];
-          int perfect = strcmp(sampleCodon, candidateCodon);
+          strncpy(sampleCodon, sample_segment + windowShift, 3); 
+          strncpy(candidateCodon, candidate_segment + windowStart + windowShift, 3); 
+          
           //Check if Exact -- Score 10
-          if (strcmp(sampleCodon, candidateCodon) == 0) {
+          if (strncmp(sampleCodon, candidateCodon, 3) == 0) {
               temp_score += 10;
           }
-          //Check if Same Amino Acid -- Score 5
-          
-          else if (strstr(codon_names[get_codon_index(sampleCodon)], codon_names[get_codon_index(candidateCodon)]) != NULL) {
+
+          //Check if Same Amino Acid -- Score 5 Changed
+          else if (strcmp(codon_names[get_codon_index(sampleCodon)], codon_names[get_codon_index(candidateCodon)]) == 0) {
               temp_score += 5;
           }
+
           //Check Individual Nucleotides
           else {
               for (int index = 0; index < 3; index++) {
@@ -379,16 +377,15 @@ int calculate_score(char* sample_segment, char* candidate_segment)
                   if (sampleCodon[index] == candidateCodon[index]) {
                       temp_score += 2;
                   }
+
                   //Check if Same Nucleotide Pair -- Score 1
                   else if (is_base_pair(sampleCodon[index], candidateCodon[index]) == 1) {
                       temp_score += 1;
                   }
               }
           }
-
-          
       }
-
+      //Check if new score is better than the previous best
       if (temp_score > score) {
           score = temp_score;
       }
