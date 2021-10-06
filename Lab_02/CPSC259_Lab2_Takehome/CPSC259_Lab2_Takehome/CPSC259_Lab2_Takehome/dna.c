@@ -244,7 +244,7 @@ int extract_dna(FILE* file_pointer, char** sample_segment, char*** candidate_seg
 void analyze_segments(char* sample_segment, char** candidate_segments, int number_of_candidates, char* output_string)
 {
   /* Some helpful variables you might want to use */
-  int* scores = NULL;
+  int* scores = NULL;  //IDK if we really need this
   int sample_length = 0;
   int candidate_length = 0;
   int i = 0;
@@ -270,7 +270,7 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
       candidate_length = strlen(candidate_segments[i]);
       if (sample_length == candidate_length) {
           if (strstr(sample_segment, candidate_segments[i]) != NULL) {
-              sprintf(int_buffer, "%d", i);
+              sprintf(int_buffer, "%d", i + 1);
               strcat(outputline_buffer, "Candidate number ");
               strcat(outputline_buffer, int_buffer);
               strcat(outputline_buffer, " is a perfect match\n");
@@ -278,23 +278,32 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
           }
       }
   }
+
+  /* Hint: Return early if we have found and reported perfect match(es) */
+
   if (has_perfect_match > 0) {
       strcpy(output_string, outputline_buffer);
       return;
   }
-  /* Hint: Return early if we have found and reported perfect match(es) */
-
-  // Insert your code here
 
   /* Hint: Otherwise we need to calculate and print all of the scores by invoking
      calculate_score for each candidate_segment. Write an output line for each
      candidate_segment and concatenate your line to output_string.
      Don't forget to clear your outputline_buffer for each new line*/
   for (i = 0; i < number_of_candidates; ++i) {
+      score = calculate_score(sample_segment, candidate_segments[i]);
 
+      //String Concatenation for Candidate
+      sprintf(int_buffer, "%d", i + 1);
+      strcat(outputline_buffer, "Candidate number ");
+      strcat(outputline_buffer, int_buffer);
+      sprintf(int_buffer, "%d", score);
+      strcat(outputline_buffer, " matched with a best score of ");
+      strcat(outputline_buffer, int_buffer);
+      strcat(outputline_buffer, "\n");
     // Insert your code here - maybe a call to calculate_score?
   }
-
+  strcpy(output_string, outputline_buffer);
   /* End of function */
   return;
 }
@@ -337,7 +346,52 @@ int calculate_score(char* sample_segment, char* candidate_segment)
   int sample_length = strlen(sample_segment);
   int candidate_length = strlen(candidate_segment);
   int sample_length_in_codons = sample_length / 3;
+  int candidate_length_in_codons = candidate_length / 3;
+  int windowStart;
+  char sampleCodon[3];
+  char candidateCodon[3];
 
   // Insert your code here (replace this return statement with your own code)
-  return 0;
+  for (iterations = 0; iterations < (candidate_length_in_codons - sample_length_in_codons + 1); iterations++) {
+      temp_score = 0;
+      windowStart = 3 * iterations;
+      
+      for (int windowShift = 0; windowShift < sample_length; windowShift+=3) {
+          //Copies Codons
+          strncpy(sampleCodon, sample_segment + windowShift, 3);
+          strncpy(candidateCodon, candidate_segment + windowStart + windowShift, 3);
+          char* sampleName = codon_names[get_codon_index(sampleCodon)];
+          char* candidateName = codon_names[get_codon_index(candidateCodon)];
+          int perfect = strcmp(sampleCodon, candidateCodon);
+          //Check if Exact -- Score 10
+          if (strcmp(sampleCodon, candidateCodon) == 0) {
+              temp_score += 10;
+          }
+          //Check if Same Amino Acid -- Score 5
+          
+          else if (strstr(codon_names[get_codon_index(sampleCodon)], codon_names[get_codon_index(candidateCodon)]) != NULL) {
+              temp_score += 5;
+          }
+          //Check Individual Nucleotides
+          else {
+              for (int index = 0; index < 3; index++) {
+                  //Check if Same Nucleotide -- Score 2
+                  if (sampleCodon[index] == candidateCodon[index]) {
+                      temp_score += 2;
+                  }
+                  //Check if Same Nucleotide Pair -- Score 1
+                  else if (is_base_pair(sampleCodon[index], candidateCodon[index]) == 1) {
+                      temp_score += 1;
+                  }
+              }
+          }
+
+          
+      }
+
+      if (temp_score > score) {
+          score = temp_score;
+      }
+  }
+  return score;
 }
