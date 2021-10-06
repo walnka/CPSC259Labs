@@ -279,7 +279,7 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
       }
   }
   if (has_perfect_match > 0) {
-      *output_string = outputline_buffer;
+      strcpy(output_string, outputline_buffer);
       return;
   }
   /* Hint: Return early if we have found and reported perfect match(es) */
