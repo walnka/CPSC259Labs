@@ -367,7 +367,7 @@ int calculate_score(char* sample_segment, char* candidate_segment)
           if (strcmp(sampleCodon, candidateCodon) == 0) {
               temp_score += 10;
           }
-          //Check if Same Amino Acid -- Score 5
+          //Check if Same Amino Acid -- Score 5 Changed
           
           else if (strstr(codon_names[get_codon_index(sampleCodon)], codon_names[get_codon_index(candidateCodon)]) != NULL) {
               temp_score += 5;
