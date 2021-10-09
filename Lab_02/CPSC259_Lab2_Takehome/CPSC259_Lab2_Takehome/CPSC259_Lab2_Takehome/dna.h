@@ -2,10 +2,10 @@
  File:        dna.h
  Purpose:     Contains constants, prototypes, and two
               helpful arrays.
- Author:			Your names
- Student #s:	12345678 and 12345678
- CWLs:	      cwl1 and cwl2
- Date:				Add the date here
+ Author:	Willem Van Dam and Liam Foster
+ Student #s:	33500646 and 40199382
+ CWLs:	      	wvandam and lifost00
+ Date:		October 8, 2021
  */
 
  /******************************************************************
