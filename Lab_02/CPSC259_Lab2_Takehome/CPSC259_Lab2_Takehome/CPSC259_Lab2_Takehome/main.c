@@ -1,10 +1,10 @@
 /*
  File:        main.c
  Purpose:     Interactive driver for CPSC 259 Lab2 Takehome
- Author:			Your names
- Student #s:	12345678 and 12345678
- CWLs:	      cwl1 and cwl2
- Date:				Add the date here
+ Author:	Willem Van Dam and Liam Foster
+ Student #s:	33500646 and 40199382
+ CWLs:	      	wvandam and lifost00
+ Date:		October 8, 2021
 */
 
  /******************************************************************
@@ -24,7 +24,6 @@
 #define LAST_MENU_ITEM        3
 
 #define LINESIZE            512
-#define OUTPUTBUFFERLENGTH 4096
 
 #include <stdio.h>
 #include <stdlib.h>
