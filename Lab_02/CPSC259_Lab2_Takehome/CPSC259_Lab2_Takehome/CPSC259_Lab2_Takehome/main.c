@@ -56,7 +56,7 @@ int main(void)
   int     number_of_candidates = 0;
   int     menu_choice = 0;
   int     number_of_main_menu_choices = NUMBER_OF_MENU_ITEMS;
-  char outputstring[OUTPUTBUFFERLENGTH] = "";
+  char outputstring[BUFSIZE] = "";
 
   /* Generates menu and responds to user input */
   do {
