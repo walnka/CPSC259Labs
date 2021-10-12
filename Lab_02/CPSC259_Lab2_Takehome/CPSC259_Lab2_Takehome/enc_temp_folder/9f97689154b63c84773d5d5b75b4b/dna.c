@@ -298,7 +298,7 @@ void analyze_segments(char* sample_segment, char** candidate_segments, int numbe
       strcat(outputline_buffer, "Candidate number ");
       strcat(outputline_buffer, int_buffer);
       sprintf(int_buffer, "%d", score);
-      strcat(outputline_buffer, " matches with a score of ");
+      strcat(outputline_buffer, " matches with a best score of ");
       strcat(outputline_buffer, int_buffer);
       strcat(outputline_buffer, "\n");
     // Insert your code here - maybe a call to calculate_score?
