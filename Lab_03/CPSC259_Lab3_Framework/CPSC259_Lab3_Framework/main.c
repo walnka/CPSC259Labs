@@ -34,6 +34,13 @@
 int main(void)
 {
   /* The system command forces the system to pause */
+  airplane test_airplane = { 100, "Vancouver", "Toronto", 1, 900, 36000, 350 };
+  airplane test_airplane2 = { 102, "Vancouver", "Toronto", 1, 900, 36000, 350 };
+  node* node1 = create_node(test_airplane);
+  node* node2 = create_node(test_airplane2);
+  node1->next = node2;
+  //node1 = NULL;
+  print_list(node1);
   system("pause");
   return 0;
 }
