@@ -30,6 +30,8 @@
 node* create_linked_list()
 {
 	// Insert your code here
+    node* start = NULL;
+    return start;
 
 }
 
@@ -46,9 +48,11 @@ node* create_linked_list()
 node* create_node(airplane plane)
 {
 	// Insert your code here
-
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->plane = plane;
+    new_node->next = NULL;
   // replace this line with something appropriate
-  return NULL;
+  return new_node;
 }
 
 /*
@@ -56,7 +60,7 @@ node* create_node(airplane plane)
  parameter, and returns a pointer to the result.
  PARAM:     list is a pointer to a (possibly empty) linked list of struct node
  PARAM:     new_node is a pointer to a struct node
- PRE:       new_mode is not null
+ PRE:       new_node is not null
  POST:      The specified struct node is added to the beginning of the list
             and its next pointer points to the node that used to be first
  RETURN:    A pointer to a linked list which contains all of the nodes
@@ -65,9 +69,10 @@ node* create_node(airplane plane)
 node* prepend_node(node* list, node* new_node)
 {
 	// Insert your code here
-
+    new_node->next = list;
+    list = new_node;
   // replace this line with something appropriate
-  return NULL;
+  return list;
 }
 
 /*

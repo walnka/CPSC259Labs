@@ -19,11 +19,20 @@
 /* Insert your airplane structure here.  Use the correct types and names for the elements! */
 typedef struct airplane {
 	// Add your member elements here
+	int flight_number;
+	char* city_origin;
+	char* city_destination;
+	int priority;
+	int maximum_speed_kph;
+	int cruising_altitude;
+	int capacity;
 } airplane;
 
 /* Insert your node structure here.  Use the correct types and names for the elements! */
 typedef struct node {
 	// Add your member elements here
+	struct node* next;
+	airplane plane;
 } node;
 
 /* Prototypes for in-lab functions (do not add anything here) */
