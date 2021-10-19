@@ -47,11 +47,9 @@ node* create_linked_list()
  */
 node* create_node(airplane plane)
 {
-	// Insert your code here
     node* new_node = (node*)malloc(sizeof(node));
     new_node->plane = plane;
     new_node->next = NULL;
-  // replace this line with something appropriate
   return new_node;
 }
 
@@ -68,10 +66,8 @@ node* create_node(airplane plane)
  */
 node* prepend_node(node* list, node* new_node)
 {
-	// Insert your code here
     new_node->next = list;
     list = new_node;
-  // replace this line with something appropriate
   return list;
 }
 
@@ -88,10 +84,13 @@ node* prepend_node(node* list, node* new_node)
  */
 node* delete_node(node* list)
 {
-	// Insert your code here
-
-  // replace this line with something appropriate
-  return NULL;
+    if (list == NULL){
+        return NULL;
+    }
+    node* temp = list;
+    list = list->next;
+    free(temp);
+  return list;
 }
 
 /*
@@ -103,10 +102,12 @@ node* delete_node(node* list)
  */
 int get_length(node* list)
 {
-	// Insert your code here
-
-  // replace this line with something appropriate
-  return -1;
+    int count = 0;
+    while (list != NULL) {
+        list = list->next;
+        count++;
+    }
+    return count;
 }
 
 /*
@@ -119,9 +120,12 @@ int get_length(node* list)
  */
 node* delete_list(node* list)
 {
-	// Insert your code here
-
-  // replace this line with something appropriate
+    node* temp;
+    while (list != NULL) {
+        temp = list;
+        list = list->next;
+        free(temp);
+    }
   return list;
 }
 
@@ -139,8 +143,23 @@ node* delete_list(node* list)
  */
 void print_node(node* node_to_print)
 {
-	// Insert your code here
-
+    if (node_to_print == NULL) {
+        printf("The node is empty\n");
+        return;
+    }
+    else if (node_to_print->next ==NULL) {
+        printf("Link = NULL\n");
+    }
+    else {
+        printf("Link points to address 0x%p\n", node_to_print->next);
+    }
+    printf("flight_number: %d\n", node_to_print->plane.flight_number);
+    printf("city_origin: %s\n", node_to_print->plane.city_origin);
+    printf("city_destination: %s\n", node_to_print->plane.city_destination);
+    printf("priority: %d\n", node_to_print->plane.priority);
+    printf("maximum_speed_kph: %d\n", node_to_print->plane.maximum_speed_kph);
+    printf("cruising_altitude: %d\n", node_to_print->plane.cruising_altitude);
+    printf("capacity: %d\n", node_to_print->plane.capacity);
 }
 
 /*
@@ -157,6 +176,17 @@ void print_node(node* node_to_print)
 void print_list(node* list_to_print)
 {
 	// Insert your code here
+    if (list_to_print == NULL) {
+        printf("The list is empty\n");
+    }
+    int index = 1;
+    while (list_to_print != NULL) {
+        printf("Node %d:\n", index);
+        print_node(list_to_print);
+        list_to_print = list_to_print->next;
+        printf("\n");
+        index++;
+    }
 
 }
 
@@ -171,10 +201,19 @@ void print_list(node* list_to_print)
  */
 node* reverse(node* list)
 {
-	// Insert your code here
-
-  // replace this line with something appropriate
-  return NULL;
+    if (list == NULL) {
+        return NULL;
+    }
+    node* temp = NULL;
+    node* prev = NULL;
+    while (list->next != NULL) {
+        temp = list; 
+        list = list->next;
+        temp->next = prev;
+        prev = temp;
+    }
+    list->next = prev;
+  return list;
 }
 
 /*
@@ -191,9 +230,12 @@ node* reverse(node* list)
  */
 node* remove_from_list(node* list, char* destination_city)
 {
-	// Insert your code here
-
-  // replace this line with something appropriate
+    int count = 0;
+    while (list != NULL) {
+    list = list->next;
+    count++;
+    }
+    return count;
   return NULL;
 }
 
