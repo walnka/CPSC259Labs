@@ -2,10 +2,10 @@
  File:         linkedlist.c
  Purpose:      Implements the linked list functions whose prototypes
                are declared in the linked_list.h header file
- Author:       Your names
- Student #s:   12345678 and 12345678
- CWLs:         cwl1 and cwl2
- Date:         Add the date here
+ Author:       Liam Foster and Willem Van Dam
+ Student #s:   40199382 and 33500646
+ CWLs:         lifost00 and wvandam
+ Date:         October 19, 2021
  */
  
 /* Preprocessor directives */
