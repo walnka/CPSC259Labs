@@ -90,7 +90,7 @@ node* delete_node(node* list)
     node* temp = list;
     list = list->next;
     free(temp);
-  return list;
+    return list;
 }
 
 /*
@@ -211,9 +211,10 @@ node* reverse(node* list)
         list = list->next;
         temp->next = prev;
         prev = temp;
+        
     }
     list->next = prev;
-  return list;
+    return list;
 }
 
 /*
@@ -230,13 +231,25 @@ node* reverse(node* list)
  */
 node* remove_from_list(node* list, char* destination_city)
 {
-    int count = 0;
+    node* head = list;
+    node* prev = list;
+    int flag = 0;
     while (list != NULL) {
-    list = list->next;
-    count++;
+        if (list->plane.city_destination == destination_city) {
+            list = delete_node(list);
+            prev->next = list;
+            if (flag == 0) {
+                head = list;
+            }
+        }
+        else {
+            list = list->next;
+            
+        }
+        prev = prev->next;
+        flag++;
     }
-    return count;
-  return NULL;
+    return head;
 }
 
 /*
@@ -252,10 +265,16 @@ node* remove_from_list(node* list, char* destination_city)
  */
 node* retrieve_nth(node* list, int ordinality)
 {
-	// Insert your code here
-
-  // replace this line with something appropriate
-  return NULL;
+    if (ordinality <= get_length(list)) {
+        int i;
+        for (i = 1; i < ordinality; i++) {
+            list = list->next;
+        }
+        return list;
+    }
+    else {
+        return NULL;
+    }
 }
 
 /*
@@ -278,8 +297,13 @@ node* retrieve_nth(node* list, int ordinality)
  */
 node* insert_nth(node* list, node* node_to_insert, int ordinality)
 {
-	// Insert your code here
-
-  // replace this line with something appropriate
-  return NULL;
+    if (ordinality <= get_length(list) + 1) {
+        node* head = list;
+        list = retrieve_nth(list, ordinality);
+         list = prepend_node(list, node_to_insert);
+         retrieve_nth(head, ordinality - 1)->next = list;
+    }
+    else {
+        return list;
+    }
 }
