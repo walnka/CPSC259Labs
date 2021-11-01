@@ -246,7 +246,9 @@ node* remove_from_list(node* list, char* destination_city)
             list = list->next;
             
         }
-        prev = prev->next;
+        if (flag != 0) {
+            prev = prev->next;
+        }
         flag++;
     }
     return head;
@@ -297,13 +299,16 @@ node* retrieve_nth(node* list, int ordinality)
  */
 node* insert_nth(node* list, node* node_to_insert, int ordinality)
 {
-    if (ordinality <= get_length(list) + 1) {
+    //node* head = list;
+    if (ordinality == 1) {
+        list = prepend_node(list, node_to_insert);
+    }
+    else if (ordinality <= get_length(list) + 1) {
         node* head = list;
         list = retrieve_nth(list, ordinality);
-         list = prepend_node(list, node_to_insert);
-         retrieve_nth(head, ordinality - 1)->next = list;
+        list = prepend_node(list, node_to_insert);
+        retrieve_nth(head, ordinality - 1)->next = list;
+        return head;
     }
-    else {
-        return list;
-    }
+    return list;
 }
