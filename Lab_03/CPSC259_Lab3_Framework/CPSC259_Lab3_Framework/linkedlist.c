@@ -299,7 +299,6 @@ node* retrieve_nth(node* list, int ordinality)
  */
 node* insert_nth(node* list, node* node_to_insert, int ordinality)
 {
-    //node* head = list;
     if (ordinality == 1) {
         list = prepend_node(list, node_to_insert);
     }
