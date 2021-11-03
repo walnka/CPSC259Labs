@@ -112,29 +112,19 @@ int is_palindrome(char* string, int string_length)
  */
 int draw_ramp(int number, char* buffer)
 {
-	/*buffer = buffer + draw_row(number, buffer);
-	if (number > 1) {
-		draw_ramp(number - 1, buffer);
-		
-	}
-	else if (number == 1) {
-		draw_ramp(number + 1, buffer);
-	}
-	*/
-	int num = draw_row(number, buffer);
-	int flag = -1;
-	if (number > 1) {
-		//return num + draw_ramp(number - 1, buffer + num);
-		//flag = -1;
-	}
+	//Base Case: When number = 1 it turns around and starts to execute the stashed upwards ramp calls
+	int numChar;
 	if (number == 1) {
-		flag = 1;
-		//return num + draw_ramp(number + 1, buffer + num);
+		numChar = draw_row(number, buffer);
 	}
-	if (flag == 1)
-	return num + draw_ramp(number + flag, buffer + num);
-	return 0;
-
+	else {
+		int numCharRow = draw_row(number, buffer);	//Draws the row on the way down
+		numChar = numCharRow + draw_ramp(number - 1, buffer + numCharRow); //Recursively calls itself to draw the row next row until 1
+		*(buffer + numChar++) = '\n'; //After 1 the \n gets truncated as we exit the previous call so it adds it back on all but the last
+		numChar = numChar + draw_row(number, buffer + numChar); // This draws the rows on the way back up as each else loop in the stack finishes
+	}
+	*(buffer + --numChar) = '\0'; //This truncates the /n on the way up so that only the last one ends up truncated (the rest are restored in the else statement
+	return numChar; //returns the number of characters thus far
 }
 
 /*
@@ -152,7 +142,8 @@ int draw_row(int size, char* buffer)
 {
 	*buffer = '*';
 	if (size == 1) {
-		return 1;
+		*(buffer + 1) = '\n';
+		return 2;
 	}
 
 	else {
