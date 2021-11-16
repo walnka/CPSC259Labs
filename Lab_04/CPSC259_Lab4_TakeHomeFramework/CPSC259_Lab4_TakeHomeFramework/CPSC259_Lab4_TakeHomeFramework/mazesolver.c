@@ -93,11 +93,9 @@ int get_maze_dimension( FILE* maze_file )  {
 	   IF TRUE reduce strlen by 2 in order to omit '\r' and '\n' from each line
 	   ELSE    reduce strlen by 1 in order to omit '\n' from each line */
   if ( strchr( line_buffer, '\r' ) != NULL ) {
-    // INSERT CODE HERE (1 line)
-    // return ...
+	 return dimension -= 2;
   } else {
-    // INSERT CODE HERE (1 line)
-    // return ...
+	  return dimension--;
   }
 }
 
@@ -127,25 +125,22 @@ maze_cell** parse_maze( FILE* maze_file, int dimension )
 	/* Variables */
   char        line_buffer[BUFFER];
   int         row = 0;
-	int         column = 0;
-	maze_cell** maze = NULL; 
+  int         column = 0;
+  maze_cell** maze = NULL; 
 
   /* Allocates memory for correctly-sized maze */
-  // INSERT CODE HERE (1 line)
-  // maze = ( maze_cell ** ) calloc ... (1 line)
+  maze = (maze_cell**)calloc(dimension, sizeof(maze_cell*));
 
   for ( row = 0; row < dimension; ++row ) {
-    // INSERT CODE HERE (1 line)
-    // maze[row] = ( maze_cell* ) calloc ... (1 line)
+	  maze[row] = (maze_cell*)calloc(1, sizeof(maze_cell));
   }
 
   /* Copies maze file to memory */
-	row = 0;
+  row = 0;
   while ( fgets ( line_buffer, BUFFER, maze_file ) ) {
     for ( column = 0; column < dimension; ++column ) {
-      // INSERT CODE HERE (2 lines)
-      // maze[row][column].character = ...
-      // maze[row][column].visited = ...
+	  maze[row][column].character = line_buffer[column];
+	  maze[row][column].visited = NULL;  //CHECK THIS OUT LATER
 	  }
     row++;
   }
