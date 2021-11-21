@@ -99,9 +99,11 @@ int get_maze_dimension( FILE* maze_file )  {
 	   IF TRUE reduce strlen by 2 in order to omit '\r' and '\n' from each line
 	   ELSE    reduce strlen by 1 in order to omit '\n' from each line */
   if ( strchr( line_buffer, '\r' ) != NULL ) {
-	 return dimension -= 2;
+	  dimension -= 2;
+	 return dimension;
   } else {
-	  return dimension--;
+	  dimension--;
+	  return dimension;
   }
 }
 
@@ -276,8 +278,7 @@ void construct_shortest_path_info ( char** pathset, int numpaths, char* outputbu
 	int length_of_path = NULL;
 	int shortest_length = strlen(pathset[0])+1;
 	strcat(outputbuffer, "Shortest path: ");
-	//strcat(outputbuffer, "Shortest path: ");
-	char* path_buffer = "\0";
+	char* path_buffer = "\0"; //Saves the path to a different buffer string so it can be overwritten if a better path is found
 
 	for (int i = 0; i < numpaths; i++) {
 		length_of_path = strlen(pathset[i]);
@@ -308,8 +309,8 @@ void construct_cheapest_path_info ( char** pathset, int numpaths, char* outputbu
 {
 	int cost_of_path = NULL;
 	int cheapest_cost = path_cost(pathset[0]) + 1;
-	char cost_buffer[BUFFER];
-	char cheapest_buffer[BUFFER];
+	char cost_buffer[BUFFER]; //Buffer string for converting int cost of path to string
+	char cheapest_buffer[BUFFER]; //buffer for writing output to be overwritten if chepaer path is found
 	for (int i = 0; i < numpaths; i++) {
 		cost_of_path = path_cost(pathset[i]);
 		if (cost_of_path < cheapest_cost) {
@@ -323,7 +324,7 @@ void construct_cheapest_path_info ( char** pathset, int numpaths, char* outputbu
 			strcat(cheapest_buffer, "\n");
 		}
 	}
-	strcat(outputbuffer, cheapest_buffer);
+	strcat(outputbuffer, cheapest_buffer); //Writes cheapest path output to string
 }
 
 /* End of file */
