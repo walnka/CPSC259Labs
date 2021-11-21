@@ -52,8 +52,8 @@ void process()
       a) get the size of the maze and stores it in the dimension variable
       b) copies the maze into memory */
       // INSERT YOUR CODE HERE (2 lines)
-      // dimension = ...
-      // maze = parse_maze( ...
+	  dimension = get_maze_dimension(maze_file);
+	  maze = parse_maze(maze_file, dimension);
 
   }
   else {
@@ -63,10 +63,12 @@ void process()
 
   /* Traverses maze and generates all solutions */
   // INSERT YOUR CODE HERE (1 line)
-  // generate_all_paths(...
+  generate_all_paths(&paths, &paths_found, maze, dimension, 0, 0, "");
 
   /* Calculates and displays required data */
-  // INSERT YOUR CODE HERE
+  construct_shortest_path_info(paths, paths_found, outputstring);
+  construct_cheapest_path_info(paths, paths_found, outputstring);
+  printf(outputstring);
 }
 
 /*
@@ -132,7 +134,7 @@ maze_cell** parse_maze( FILE* maze_file, int dimension )
   maze = (maze_cell**)calloc(dimension, sizeof(maze_cell*));
 
   for ( row = 0; row < dimension; ++row ) {
-	  maze[row] = (maze_cell*)calloc(1, sizeof(maze_cell));
+	  maze[row] = (maze_cell*)calloc(dimension, sizeof(maze_cell));
   }
 
   /* Copies maze file to memory */
@@ -140,7 +142,7 @@ maze_cell** parse_maze( FILE* maze_file, int dimension )
   while ( fgets ( line_buffer, BUFFER, maze_file ) ) {
     for ( column = 0; column < dimension; ++column ) {
 	  maze[row][column].character = line_buffer[column];
-	  maze[row][column].visited = NULL;  //CHECK THIS OUT LATER
+	  maze[row][column].visited = 'N';  //CHECK THIS OUT LATER
 	  }
     row++;
   }
@@ -170,20 +172,18 @@ maze_cell** parse_maze( FILE* maze_file, int dimension )
  POST:      IF current coordinate is at maze finish line (right boundary)
             THEN paths contains the path from start to finish.
  POST:      dereferenced pathset contains all paths found
- POST:      dereferences numpaths contains the number of paths found
+ POST:      dereferenced numpaths contains the number of paths found
  */
-void generate_all_paths( char*** pathsetref, int* numpathsref, maze_cell** maze, int dimension, int row, int column, char* path )
+void generate_all_paths(char*** pathsetref, int* numpathsref, maze_cell** maze, int dimension, int row, int column, char* path)
 {
 	/* Variables */
-	int path_length   = 0;
-	char* new_point  = NULL;
-	char* new_path   = NULL;
+	int path_length = 0;
+	char* new_point = NULL;
+	char* new_path = NULL;
 
-  /* Checks for base cases */
-  if ( // INSERT CODE HERE: Simply return if we hit one of the base cases (there are more than 1)
-       // (remember to delete 1 on the next line, which is here so the incomplete program compiles)
-       1 ) {
-    return;
+	/* Checks for base cases */
+	if (row == dimension || column == dimension || column < 0 || row < 0 || maze[row][column].character == '*' || maze[row][column].visited == 'Y') {
+		return;
 	}
 
   /* Otherwise deals with the recursive case.  Pushes the current coordinate onto the path
@@ -223,14 +223,13 @@ void generate_all_paths( char*** pathsetref, int* numpathsref, maze_cell** maze,
 		  /* 1. Mark point as visited
 			   2. Recursively search in each direction using the new path, and the same pathsetref and numpathsref
 			   3. Mark point as unvisited */
-      // INSERT CODE HERE (6 lines)
-      // maze.[row][column].visited = ...
-      // generate_all_paths...
-      // generate_all_paths...
-      // generate_all_paths...
-      // generate_all_paths...
-      // maze.[row][column].visited = ...
-		  return;
+		maze[row][column].visited = 'Y';
+		generate_all_paths(pathsetref, numpathsref, maze, dimension, row - 1, column, new_path);
+		generate_all_paths(pathsetref, numpathsref, maze, dimension, row, column-1, new_path);
+		generate_all_paths(pathsetref, numpathsref, maze, dimension, row +1, column, new_path);
+		generate_all_paths(pathsetref, numpathsref, maze, dimension, row, column+1, new_path);
+		maze[row][column].visited = 'N';
+		return;
     }
   }
 }
@@ -247,8 +246,11 @@ void generate_all_paths( char*** pathsetref, int* numpathsref, maze_cell** maze,
  */
 int path_cost ( char* path_string )
 {
-  int cost = 0;
-	// INSERT CODE HERE
+	int cost = 0;
+	int length = strlen(path_string);
+	for (int i = 0; i < length; i++) {
+		cost += (path_string[i] - '0');
+	}
   
   return cost;
 }
@@ -267,7 +269,18 @@ int path_cost ( char* path_string )
  */
 void construct_shortest_path_info ( char** pathset, int numpaths, char* outputbuffer )
 {
-	// INSERT CODE HERE
+	int length_of_path = NULL;
+	int shortest_length = strlen(pathset[0])+1;
+	char* buffer = "\0";
+	for (int i = 0; i < numpaths; i++) {
+		length_of_path = strlen(pathset[i]);
+		if (length_of_path < shortest_length) {
+			shortest_length = length_of_path;
+			buffer = "Shortest path: \0";
+			strcat(buffer, pathset[i]);
+			strcat(buffer, "\n");
+		}
+	}
 }
 
 /*
@@ -286,7 +299,22 @@ void construct_shortest_path_info ( char** pathset, int numpaths, char* outputbu
  */
 void construct_cheapest_path_info ( char** pathset, int numpaths, char* outputbuffer )
 {
-	// INSERT CODE HERE
+	int cost_of_path = NULL;
+	int cheapest_cost = path_cost(pathset[0]);
+	char cost_buffer;
+	for (int i = 0; i < numpaths; i++) {
+		cost_of_path = path_cost(pathset[i]);
+		if (cost_of_path < cheapest_cost) {
+			cheapest_cost = cost_of_path;
+			cost_buffer = cheapest_cost + '0';
+			strcat(outputbuffer, "Cheapest path: ");
+			strcat(outputbuffer, pathset[i]);
+			strcat(outputbuffer, "\n");
+			strcat(outputbuffer, "Cheapest path cost: ");
+			strcat(outputbuffer, &cost_buffer);
+			strcat(outputbuffer, "\n");
+		}
+	}
 }
 
 /* End of file */
