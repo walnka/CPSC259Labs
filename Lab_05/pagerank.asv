@@ -26,14 +26,11 @@ StochasticMatrix(:, column) = 1./dimension;
 Q = ones(dimension, dimension);
 TransitionMatrix = p * StochasticMatrix + (1 - p) * (Q/dimension);
 
-%Define PageRank vector and iterate using transition matrix until converges
-%(chose 100 as iteration time as it is plenty long enough to converge)
+%Define PageRank 
 PageRank = ones(dimension, 1);
 for i = 1:100
     PageRank = TransitionMatrix * PageRank; 
 end
-
-%Return PageRank Vector with final ranks of each node
 PageRank = PageRank / sum(PageRank)
 
 %{ 
