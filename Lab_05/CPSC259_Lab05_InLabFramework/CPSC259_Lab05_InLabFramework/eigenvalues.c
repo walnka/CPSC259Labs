@@ -28,22 +28,27 @@ int main(void) {
         system("pause");
         return 1;
     }
+    // Creates a 2-D double-precision floating-point array initialized to 0, or returns NULL on failure. 
     testArray = mxCreateDoubleMatrix(3, 3, mxREAL);
 
+    // Copies the array from the local 2-D array "time" to the MATLAB array "testArray"
     memcpy((void*)mxGetPr(testArray), (void*)time, 9 * sizeof(double));
 
+    // Places the test array in the MATLAB workspace
     if (engPutVariable(ep, "testArray", testArray)) {
         fprintf(stderr, "\nCannot write test array to MATLAB \n");
         system("pause");
         exit(1); // Same as return 1;
     }
 
+    // Calculates the eigenvalues of the matrix using the MATLAB engine
     if (engEvalString(ep, "testArrayEigen = eig(testArray)")) {
         fprintf(stderr, "\nError calculating eigenvalues  \n");
         system("pause");
         exit(1);
     }
 
+    // Retrieves the eigenvectors and eigenvalues
     printf("\nRetrieving eigenvector\n");
     if ((result = engGetVariable(ep, "testArrayEigen")) == NULL) {
         fprintf(stderr, "\nFailed to retrieve eigenvalue vector\n");
@@ -59,6 +64,7 @@ int main(void) {
         }
     }
 
+    // Null-terminates the buffer
     if (engOutputBuffer(ep, buffer, BUFSIZE)) {
         fprintf(stderr, "\nCan't create buffer for MATLAB output\n");
         system("pause");
@@ -66,9 +72,11 @@ int main(void) {
     }
     buffer[BUFSIZE] = '\0';
 
+
     engEvalString(ep, "whos"); // whos is a handy MATLAB command that generates a list of all current variables
     printf("%s\n", buffer);
 
+    // Closes connection to MATALB
     mxDestroyArray(testArray);
     mxDestroyArray(result);
     testArray = NULL;

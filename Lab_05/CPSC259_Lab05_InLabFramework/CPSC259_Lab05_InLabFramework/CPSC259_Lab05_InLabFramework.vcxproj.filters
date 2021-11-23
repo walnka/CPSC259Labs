@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pagerank.c">
+    <ClCompile Include="multmatrix.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
