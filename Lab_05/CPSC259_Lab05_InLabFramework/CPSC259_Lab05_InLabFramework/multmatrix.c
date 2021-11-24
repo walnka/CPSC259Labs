@@ -1,6 +1,6 @@
 /*
  File:          multmatrix.c
- Purpose:       Exercise to learn how to calculate eigenvalues using MATLAB from a Visual Studio project
+ Purpose:       Exercise to learn how to multiply matrices using MATLAB from a Visual Studio project
  Author:		Liam Foster and Willem Van Dam
  Student #s:	40199382 and 33500646
  CWLs:		    lifost00 and wvandam
@@ -33,7 +33,7 @@ int main(void) {
     mxMatrixOne = mxCreateDoubleMatrix(3, 3, mxREAL);
     mxMatrixTwo = mxCreateDoubleMatrix(3, 3, mxREAL);
 
-    // Copies the array from the local 2-D array "time" to the MATLAB array "testArray"
+    // Copies the array from the local 2-D array "matrixOne" and "matrix Two" to the MATLAB array "mxMatrixOne" and "mxMatrixTwo"
     memcpy((void*)mxGetPr(mxMatrixOne), (void*)matrixOne, 9 * sizeof(double));
     memcpy((void*)mxGetPr(mxMatrixTwo), (void*)matrixTwo, 9 * sizeof(double));
 
@@ -49,14 +49,14 @@ int main(void) {
         exit(1); // Same as return 1;
     }
 
-    // Calculates the product of the two matrices using the MATLAB engine
-    if (engEvalString(ep, "productArray = mxMatrixOne * mxMatrixTwo")) {
+    // Calculates the product of the two matrices using the MATLAB engine and transposes for easier printing in Visual Studio
+    if (engEvalString(ep, "productArray = (mxMatrixOne * mxMatrixTwo).'")) {
         fprintf(stderr, "\nError calculating product  \n");
         system("pause");
         exit(1);
     }
 
-    //Transposes mxMatrixOne, mxMatrixTwo, and productArray for easier printing in Visual Studio
+    //Transposes mxMatrixOne, mxMatrixTwo for easier printing in Visual Studio
     if (engEvalString(ep, "mxMatrixOneT = mxMatrixOne.'")) {
         fprintf(stderr, "\nError transposing mxMatrixOne\n");
         system("pause");
@@ -68,14 +68,8 @@ int main(void) {
         system("pause");
         exit(1);
     }
-    if (engEvalString(ep, "productArrayT = productArray.'")) {
-        fprintf(stderr, "\nError transposing mxMatrixTwo\n");
-        system("pause");
-        exit(1);
-    }
 
     // Retrieves the product and transposed matrices
-    //printf("\nRetrieving product\n");
     if ((result = engGetVariable(ep, "productArrayT")) == NULL) {
         fprintf(stderr, "\nFailed to retrieve product matrix\n");
         system("pause");
@@ -95,8 +89,9 @@ int main(void) {
     else {
         size_t sizeOfResult = mxGetNumberOfElements(result);
         size_t i = 0;
-        //size_t j = 3;
         size_t column_count = 0;
+
+        //Prints first matrix
         printf("The first matrix was:\n");
         for (i = 0; i < sizeOfResult; i++) {
             printf("%f ", *(mxGetPr(mxMatrixOneT) + i));
@@ -107,6 +102,7 @@ int main(void) {
             }
         }
 
+        //prints second matrix
         column_count = 0;
         printf("\nThe second matrix was:\n");
         for (i = 0; i < sizeOfResult; i++) {
@@ -118,6 +114,7 @@ int main(void) {
             }
         }
 
+        //prints third matrix
         column_count = 0;
         printf("\nThe matrix product is:\n");
         for (i = 0; i < sizeOfResult; i++) {
