@@ -18,7 +18,7 @@
 int main(void) {
     /* Variables */
     Engine* ep = NULL; // A pointer to a MATLAB engine object
-    mxArray* mxMatrixOne = NULL, * mxMatrixTwo = NULL, * result = NULL; // mxArray is the fundamental type underlying MATLAB data
+    mxArray* mxMatrixOne = NULL, * mxMatrixTwo = NULL, * result = NULL, * mxMatrixOneT, * mxMatrixTwoT; // mxArray is the fundamental type underlying MATLAB data
     double matrixOne[3][3] = { { 1.0, 2.0, 3.0 }, {4.0, 5.0, 6.0 }, {7.0, 8.0, 9.0 } }; // Our test 'matrix', a 2-D array
     double matrixTwo[3][3] = { { 2.0, 2.0, 2.0 }, {3.0, 3.0, 3.0 }, {4.0, 4.0, 4.0 } };
     char buffer[BUFSIZE + 1];
@@ -56,35 +56,76 @@ int main(void) {
         exit(1);
     }
 
-    // Retrieves the product
+    //Transposes mxMatrixOne, mxMatrixTwo, and productArray for easier printing in Visual Studio
+    if (engEvalString(ep, "mxMatrixOneT = mxMatrixOne.'")) {
+        fprintf(stderr, "\nError transposing mxMatrixOne\n");
+        system("pause");
+        exit(1);
+    }
+
+    if (engEvalString(ep, "mxMatrixTwoT = mxMatrixTwo.'")) {
+        fprintf(stderr, "\nError transposing mxMatrixTwo\n");
+        system("pause");
+        exit(1);
+    }
+    if (engEvalString(ep, "productArrayT = productArray.'")) {
+        fprintf(stderr, "\nError transposing mxMatrixTwo\n");
+        system("pause");
+        exit(1);
+    }
+
+    // Retrieves the product and transposed matrices
     //printf("\nRetrieving product\n");
-    if ((result = engGetVariable(ep, "productArray")) == NULL) {
+    if ((result = engGetVariable(ep, "productArrayT")) == NULL) {
         fprintf(stderr, "\nFailed to retrieve product matrix\n");
         system("pause");
         exit(1);
     }
+    if ((mxMatrixOneT = engGetVariable(ep, "mxMatrixOneT")) == NULL) {
+        fprintf(stderr, "\nFailed to retrieve MatrixOne transpose\n");
+        system("pause");
+        exit(1);
+    }
+    if ((mxMatrixTwoT = engGetVariable(ep, "mxMatrixTwoT")) == NULL) {
+        fprintf(stderr, "\nFailed to retrieve mxMatrixTwo transpose\n");
+        system("pause");
+        exit(1);
+    }
+
     else {
         size_t sizeOfResult = mxGetNumberOfElements(result);
         size_t i = 0;
+        //size_t j = 3;
+        size_t column_count = 0;
         printf("The first matrix was:\n");
-        for (i = 0; i < sizeOfResult; ++i) {
-            printf("%f ", *(mxGetPr(mxMatrixOne) + i));
-            if ((i + 1) % 3 == 0) {
+        for (i = 0; i < sizeOfResult; i++) {
+            printf("%f ", *(mxGetPr(mxMatrixOneT) + i));
+            column_count++;
+            if (column_count == 3) {
                 printf("\n");
+                column_count = 0;
             }
         }
+
+        column_count = 0;
         printf("\nThe second matrix was:\n");
-        for (i = 0; i < sizeOfResult; ++i) {
-            printf("%f ", *(mxGetPr(mxMatrixTwo) + i));
-            if ((i + 1) % 3 == 0) {
+        for (i = 0; i < sizeOfResult; i++) {
+            printf("%f ", *(mxGetPr(mxMatrixTwoT) + i));
+            column_count++;
+            if (column_count == 3) {
                 printf("\n");
+                column_count = 0;
             }
         }
+
+        column_count = 0;
         printf("\nThe matrix product is:\n");
-        for (i = 0; i < sizeOfResult; ++i) {
+        for (i = 0; i < sizeOfResult; i++) {
             printf("%f ", *(mxGetPr(result) + i));
-            if ((i + 1) % 3 == 0) {
+            column_count++;
+            if (column_count == 3) {
                 printf("\n");
+                column_count = 0;
             }
         }
     }
