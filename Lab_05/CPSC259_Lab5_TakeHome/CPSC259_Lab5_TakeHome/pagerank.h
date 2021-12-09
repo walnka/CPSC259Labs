@@ -19,4 +19,4 @@
 
                 /* Function prototypes */
 int          get_web_dimension(FILE* web_file);
-int** parse_web(FILE* web_file, int dimension);
+double* parse_web(FILE* web_file, int dimension);

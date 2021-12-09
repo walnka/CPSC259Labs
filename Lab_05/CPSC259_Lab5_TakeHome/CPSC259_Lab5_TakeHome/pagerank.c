@@ -7,6 +7,7 @@
  Date:			November 30th, 2021
 */
 
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +23,7 @@ int main(void) {
     /* Variables */
     int dimension = 0;
     FILE* web_file = NULL;
-    int** web = NULL;
+    double* web = NULL;
 
 
     /* Opens and parses the maze file.  Replace the first parameter of fopen with
@@ -46,17 +47,12 @@ int main(void) {
     }
 
 
-
-
-
-
-
-
     /* Variables */
     Engine* ep = NULL; // A pointer to a MATLAB engine object
-    mxArray* testArray = NULL, * result = NULL; // mxArray is the fundamental type underlying MATLAB data
-    double time[3][3] = { { 1.0, 2.0, 3.0 }, {4.0, 5.0, 6.0 }, {7.0, 8.0, 9.0 } }; // Our test 'matrix', a 2-D array
+    mxArray* webArray = NULL, * result = NULL; // mxArray is the fundamental type underlying MATLAB data
+    double time[9] = {  1.0, 2.0, 3.0 , 4.0, 5.0, 6.0 , 7.0, 8.0, 9.0  }; // Our test 'matrix', a 2-D array
     char buffer[BUFSIZE + 1];
+
 
     /* Starts a MATLAB process */
     if (!(ep = engOpen(NULL))) {
@@ -64,50 +60,61 @@ int main(void) {
         system("pause");
         return 1;
     }
-    testArray = mxCreateDoubleMatrix(3, 3, mxREAL);
+    webArray = mxCreateDoubleMatrix(dimension, dimension, mxREAL);
 
-    memcpy((void*)mxGetPr(testArray), (void*)time, 9 * sizeof(double));
+    memcpy((void*)mxGetPr(webArray), (void*)web, sizeof(double) * dimension * dimension);
+    //memcpy((void*)mxGetPr(webArray), (void*)time, sizeof(double) * 3 * 3);
 
-    if (engPutVariable(ep, "testArray", testArray)) {
-        fprintf(stderr, "\nCannot write test array to MATLAB \n");
+    if (engPutVariable(ep, "webArray", webArray)) {
+        fprintf(stderr, "\nCannot write web array to MATLAB \n");
         system("pause");
         exit(1); // Same as return 1;
     }
-
-    if (engEvalString(ep, "testArrayEigen = eig(testArray)")) {
-        fprintf(stderr, "\nError calculating eigenvalues  \n");
-        system("pause");
-        exit(1);
-    }
-
-    printf("\nRetrieving eigenvector\n");
-    if ((result = engGetVariable(ep, "testArrayEigen")) == NULL) {
-        fprintf(stderr, "\nFailed to retrieve eigenvalue vector\n");
-        system("pause");
-        exit(1);
-    }
-    else {
-        size_t sizeOfResult = mxGetNumberOfElements(result);
-        size_t i = 0;
-        printf("The eigenvalues are:\n");
-        for (i = 0; i < sizeOfResult; ++i) {
-            printf("%f\n", *(mxGetPr(result) + i));
-        }
-    }
-
     if (engOutputBuffer(ep, buffer, BUFSIZE)) {
         fprintf(stderr, "\nCan't create buffer for MATLAB output\n");
         system("pause");
         return 1;
     }
+
     buffer[BUFSIZE] = '\0';
 
     engEvalString(ep, "whos"); // whos is a handy MATLAB command that generates a list of all current variables
     printf("%s\n", buffer);
+    engEvalString(ep, "whos");
 
-    mxDestroyArray(testArray);
+    if (engEvalString(ep, "rank = pagerank(webArray)")) {
+        fprintf(stderr, "\nError calculating pagerank \n");
+        system("pause");
+        exit(1);
+    }
+
+    printf("\nRetrieving pagerank\n");
+    if ((result = engGetVariable(ep, "rank")) == NULL) {
+        fprintf(stderr, "\nFailed to retrieve pagerank\n");
+        system("pause");
+        exit(1);
+    }
+    else {
+        size_t i = 0;
+        printf("NODE\tRANK\n---\t----\n");
+        for (i = 0; i < dimension; ++i) {
+            printf("%d\t%f\n", i+1,*(mxGetPr(result) + i));
+        }
+    }
+
+   /* if (engOutputBuffer(ep, buffer, BUFSIZE)) {
+        fprintf(stderr, "\nCan't create buffer for MATLAB output\n");
+        system("pause");
+        return 1;
+    }
+    buffer[BUFSIZE] = '\0';*/
+
+    //engEvalString(ep, "whos"); // whos is a handy MATLAB command that generates a list of all current variables
+    //printf("%s\n", buffer);
+
+    mxDestroyArray(webArray);
     mxDestroyArray(result);
-    testArray = NULL;
+    webArray = NULL;
     result = NULL;
     if (engClose(ep)) {
         fprintf(stderr, "\nFailed to close MATLAB engine\n");
@@ -117,30 +124,41 @@ int main(void) {
     return 0; // Because main returns 0 for successful completion
 }
 
-int** parse_web(FILE* web_file, int dimension)
+double* parse_web(FILE* web_file, int dimension)
 {
     /* Variables */
     char        line_buffer[BUFSIZE];
     int         row = 0;
     int         column = 0;
-    int** web = NULL;
+    double* web = NULL;
 
-    /* Allocates memory for correctly-sized web */
-    web = (int**)calloc(dimension, sizeof(int*));
+    ///* Allocates memory for correctly-sized web */
+    //web = (double**)calloc(dimension, sizeof(double*));
 
-    for (row = 0; row < dimension; ++row) {
-        web[row] = (int*)calloc(dimension, sizeof(int));
-    }
+    //for (row = 0; row < dimension; row++) {
+    //    web[row] = (double*)calloc(dimension, sizeof(double));
+    //}
 
-    /* Copies web file to memory */
+    ///* Copies web file to memory */
+    //row = 0;
+    //while (fgets(line_buffer, BUFSIZE, web_file)) {
+    //    for (column = 0; column < dimension ; column++) {
+    //        double temp = (int)line_buffer[column*2] - 48;
+    //        web[row][column] = temp;
+    //    }
+    //    row++;
+    //}
+    //return web;
+
+    web = (double*)calloc(dimension * dimension, sizeof(double));
     row = 0;
     while (fgets(line_buffer, BUFSIZE, web_file)) {
-        for (column = 0; column < dimension; ++column) {
-            web[row][column] = line_buffer[column];
+        for (column = 0; column < dimension; column++) {
+            double temp = (int)line_buffer[column * 2] - 48;
+            web[row + column] = 1.0;
         }
-        row++;
+        row += dimension;
     }
-    return web;
 }
 
 int get_web_dimension(FILE* web_file) {
@@ -159,10 +177,12 @@ int get_web_dimension(FILE* web_file) {
        ELSE    reduce strlen by 1 in order to omit '\n' from each line */
     if (strchr(line_buffer, '\r') != NULL) {
         dimension -= 2;
+        dimension -= dimension/2;
         return dimension;
     }
     else {
         dimension--;
+        dimension -= dimension/2;
         return dimension;
     }
 }
