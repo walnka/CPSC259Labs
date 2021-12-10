@@ -15,13 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="pagerank.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="pagerank.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pagerank.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <None Include="pagerank.m" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="web.txt" />
   </ItemGroup>
 </Project>
